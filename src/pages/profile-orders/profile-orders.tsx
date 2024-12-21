@@ -1,10 +1,25 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { RootState, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
+import { fetchGetOrdersApi } from '../../services/orders-slice';
+import { Outlet } from 'react-router-dom';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+  const orders: TOrder[] = useSelector(
+    (state: RootState) => state.orders.orders
+  );
+  const dispatch = useDispatch();
 
-  return <ProfileOrdersUI orders={orders} />;
+  useEffect(() => {
+    dispatch(fetchGetOrdersApi());
+  }, []);
+
+  return (
+    <>
+      <ProfileOrdersUI orders={orders} />
+      <Outlet />
+    </>
+  );
 };
