@@ -1,17 +1,21 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
 
 import { resetPasswordApi } from '@api';
 import { ResetPasswordUI } from '@ui-pages';
+import { fetchResetPasswordApi } from '../../services/auth-slice';
 
 export const ResetPassword: FC = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [error, setError] = useState<Error | null>(null);
+  const dispatch = useDispatch();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    dispatch(fetchResetPasswordApi({ password, token }));
     setError(null);
     resetPasswordApi({ password, token })
       .then(() => {
