@@ -6,6 +6,9 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector, RootState } from '../../services/store';
 
 export const IngredientDetails: FC = () => {
+  const ingredients = useSelector(
+    (state: RootState) => state.ingredients.ingredients
+  );
   const ingredientData = useSelector(
     (state: RootState) => state.ingredients.ingredientData
   );
@@ -16,7 +19,7 @@ export const IngredientDetails: FC = () => {
     if (id) {
       dispatch(getIngredientById(id));
     }
-  }, []);
+  }, [ingredients]);
 
   if (!ingredientData) {
     return <Preloader />;

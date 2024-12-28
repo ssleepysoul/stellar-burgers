@@ -46,13 +46,10 @@ const constructorSlice = createSlice({
       }
     },
     removeIngredient: (state, action: PayloadAction<number>) => {
-      const a = state.constructorItems.ingredients.filter(
-        (_item, index) => index !== action.payload
-      );
-
-      console.log(a);
-
-      state.constructorItems.ingredients = a;
+      state.constructorItems.ingredients =
+        state.constructorItems.ingredients.filter(
+          (_item, index) => index !== action.payload
+        );
     },
     moveUpIngredient: (
       state,

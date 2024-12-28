@@ -17,7 +17,7 @@ import { NotFound404 } from '@pages';
 import { Modal } from '@components';
 import { OrderInfo } from '@components';
 import { IngredientDetails } from '@components';
-import { useDispatch } from '../../services/store';
+import { RootState, useDispatch, useSelector } from '../../services/store';
 import { fetchGetUserApi } from '../../services/auth-slice';
 import {
   clearIngredientData,
@@ -28,6 +28,7 @@ import { clearOrder } from '../../services/orders-slice';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const orderData = useSelector((state: RootState) => state.orders.order);
 
   useEffect(() => {
     dispatch(fetchGetUserApi());
@@ -38,13 +39,28 @@ const App = () => {
     <div className={styles.app}>
       <AppHeader />
       <Routes>
-        <Route path='/' element={<ConstructorPage />} />
-        <Route path='/feed' element={<Feed />}>
+        <Route path='/' element={<ConstructorPage />}>
           <Route
-            path=':number' //добавить номер
+            path='/ingredients/:id'
             element={
               <Modal
-                title={'order-info'}
+                title={'Детали ингредиента'}
+                onClose={() => {
+                  dispatch(clearIngredientData());
+                  navigate('/');
+                }}
+              >
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+        </Route>
+        <Route path='/feed' element={<Feed />}>
+          <Route
+            path=':number'
+            element={
+              <Modal
+                title={`#${String(orderData?.number).padStart(6, '0')}`}
                 onClose={() => {
                   dispatch(clearOrder());
                   navigate('/feed');
@@ -55,20 +71,6 @@ const App = () => {
             }
           />
         </Route>
-        <Route
-          path='/ingredients/:id' //добавить айди
-          element={
-            <Modal
-              title={'Детали ингредиента'}
-              onClose={() => {
-                dispatch(clearIngredientData());
-                navigate('/');
-              }}
-            >
-              <IngredientDetails />
-            </Modal>
-          }
-        />
         <Route path='*' element={<NotFound404 />} />
         <Route
           path='/login'
@@ -119,10 +121,10 @@ const App = () => {
           }
         >
           <Route
-            path=':number' //добавить номер
+            path=':number'
             element={
               <Modal
-                title={'order-info'}
+                title={`#${String(orderData?.number).padStart(6, '0')}`}
                 onClose={() => {
                   navigate('/profile/orders');
                   dispatch(clearOrder());

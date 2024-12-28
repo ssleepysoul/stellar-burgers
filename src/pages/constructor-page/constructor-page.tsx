@@ -8,6 +8,7 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 import { RootState } from '../../services/store';
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 export const ConstructorPage: FC = () => {
   const isIngredientsLoading = useSelector(
@@ -31,6 +32,7 @@ export const ConstructorPage: FC = () => {
           </div>
         </main>
       )}
+      <Outlet />
     </>
   );
 };

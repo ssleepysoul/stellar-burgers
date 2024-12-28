@@ -24,7 +24,12 @@ export const Feed: FC = () => {
 
   return (
     <>
-      <FeedUI orders={orders} handleGetFeeds={() => {}} />
+      <FeedUI
+        orders={orders}
+        handleGetFeeds={() => {
+          dispatch(fetchGetFeedsApi());
+        }}
+      />
       <Outlet />
     </>
   );
