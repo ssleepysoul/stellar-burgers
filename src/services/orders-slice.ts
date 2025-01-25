@@ -18,7 +18,7 @@ type OrdersState = {
   orderError: null | {};
 };
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   feeds: {
     orders: [],
     total: 0,
