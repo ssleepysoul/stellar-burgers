@@ -8,13 +8,13 @@ import { orderBurgerApi } from '../utils/burger-api';
 import { fetchIngredients } from './ingredients-slice';
 import { TOrder } from '../utils/types';
 
-type ConstructorState = {
+export type ConstructorState = {
   orderModalData: null | TOrder;
   orderRequest: boolean;
   constructorItems: TConstructorItems;
 };
 
-const initialState: ConstructorState = {
+export const initialState: ConstructorState = {
   orderModalData: null,
   orderRequest: false,
   constructorItems: {
