@@ -99,7 +99,7 @@ describe('сonstructor slice', () => {
     ).toEqual(expectedState);
   });
 
-  it('should handle moveDownIngredient', () => {
+  it('должен обрабатывать перемещение ингредиента вниз', () => {
     const ingredient_1 = { _id: '1', type: 'sauce', name: 'Sauce' } as TIngredient;
     const ingredient_2 = { _id: '2', type: 'main', name: 'Main' } as TIngredient;
 
@@ -131,5 +131,14 @@ describe('сonstructor slice', () => {
         moveDownIngredient({ ...ingredient_2, id: ingredient_2._id })
       )
     ).toEqual(expectedState);
+  });
+
+
+  it('не должен мутировать состояние', () => {
+    const unknownAction = { type: 'UNKNOWN_ACTION' };
+    const stateBefore = { ...initialState };
+    const stateAfter = reducer(stateBefore, unknownAction);
+
+    expect(stateAfter).toEqual(stateBefore);
   });
 });

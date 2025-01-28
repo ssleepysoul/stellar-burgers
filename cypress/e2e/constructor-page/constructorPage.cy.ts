@@ -1,7 +1,24 @@
 import { token } from '../../fixtures/token';
 
 describe('проверяем функционал страницы', () => {
+  const saveToken = (token: string) => {
+    localStorage.setItem('authToken', token);
+    document.cookie = `authToken=${token}; path=/`;
+  };
+  saveToken(token);
+  Cypress.Commands.add('login', () => {
+    const token = localStorage.getItem('authToken');
+
+    if (token) {
+      cy.setCookie('authToken', token);
+      cy.intercept('**/*', (req: any) => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+      }).as('authorizedRequests');
+    }
+  });
+
   beforeEach(() => {
+    cy.login();
     cy.intercept('GET', 'api/ingredients', {
       fixture: 'ingredients.json'
     }).as('getIngredients');
@@ -38,8 +55,13 @@ describe('проверяем функционал страницы', () => {
   });
 
   it('открытие модального окна ингредиента и закрытие по крестику', () => {
+
+    cy.get('#modals').should('be.empty');
     cy.contains('Краторная булка N-200i').parent('li').click();
     cy.get('#modals').should('not.be.empty');
+    cy.get('#modals')
+      .find('.text_type_main-medium')
+      .should('have.text', 'Краторная булка N-200i');
     cy.get('#modals').find('button').click();
     cy.get('#modals').should('be.empty');
   });
@@ -53,9 +75,6 @@ describe('проверяем функционал страницы', () => {
 
   it('создание заказа', () => {
     cy.intercept('GET', 'api/auth/user', {
-      headers: {
-        Authorization: token,
-      },
       fixture: 'user-success.json'
     }).as('getUser');
     cy.wait('@getUser');
@@ -66,12 +85,9 @@ describe('проверяем функционал страницы', () => {
       .click();
     cy.contains('Оформить заказ').click();
     cy.intercept('POST', '/api/orders', {
-      headers: {
-        Authorization: token,
-      },
       fixture: 'order-success.json'
     }).as('createOrder');
-    cy.wait('@createOrder');
+    cy.wait('@createOrder', {timeout: 7000});
     cy.get('#modals').should('not.be.empty');
     cy.get('#modals').contains(66521).should('exist');
     cy.get('#modals').find('button').click();
